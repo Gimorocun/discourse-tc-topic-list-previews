@@ -25,6 +25,10 @@ const actionCategories = settings.topic_list_actions_categories
   .split("|")
   .map((id) => parseInt(id, 10));
 
+const wideFormatCategories = settings.topic_list_tiles_wide_format_categories
+  .split("|")
+  .map((id) => parseInt(id, 10));
+
 const thumbnailTags = settings.topic_list_thumbnails_tags.split("|");
 const excerptTags = settings.topic_list_excerpts_tags.split("|");
 const tilesTags = settings.topic_list_tiles_tags.split("|");
@@ -54,8 +58,9 @@ export default class TopicListPreviewsService extends Service {
     return this.discovery.tag?.name;
   }
 
+  @computed("viewingCategoryId")
   get wideFormat() {
-    return settings.topic_list_tiles_wide_format;
+    return wideFormatCategories.includes(this.viewingCategoryId);
   }
 
   enabledForCurrentTopicListRouteType(infoType) {

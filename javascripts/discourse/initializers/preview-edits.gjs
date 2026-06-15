@@ -190,7 +190,7 @@ export default apiInitializer("0.8", (api) => {
   api.registerValueTransformer("topic-list-class", ({ value }) => {
     if (topicListPreviewsService.displayTiles) {
       value.push("tiles-style");
-      if (settings.topic_list_tiles_wide_format) {
+      if (topicListPreviewsService.wideFormat) {
         value.push("side-by-side");
       }
     }

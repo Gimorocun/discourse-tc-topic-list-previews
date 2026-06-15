@@ -90,11 +90,12 @@ topic_list_tiles_larger_featured_tiles:
   type: bool
   description:
     en: "Make the tiles with featured tags larger"
-topic_list_tiles_wide_format:
-  default: false
-  type: bool
+topic_list_tiles_wide_format_categories:
+  type: list
+  list_type: category
+  default: ""
   description:
-    en: "Use wide format (places image on left instead of top) for tiles when list area is wide enough"
+    en: "The categories that will use wide format (places image on left instead of top) for tiles when list area is wide enough"
 topic_list_portfolio:
   default: true
   type: bool
