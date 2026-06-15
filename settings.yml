@@ -92,7 +92,7 @@ topic_list_tiles_larger_featured_tiles:
     en: "Make the tiles with featured tags larger"
 topic_list_tiles_wide_format_topic_lists:
   type: list
-  default: ""
+  default: latest|new|unread|top|tag|suggested|agenda|activity-topics|activity-portfolio|latest-mobile|new-mobile|unread-mobile|top-mobile|tag-mobile|suggested-mobile|agenda-mobile|activity-topics-mobile|activity-portfolio-mobile
   description:
     en: "The lists that will use wide format for tiles. Can be one of latest|new|unread|top|tag|suggested|activity-topics|activity-portfolio|latest-mobile|new-mobile|unread-mobile|top-mobile|tag-mobile|suggested-mobile|activity-topics-mobile|activity-portfolio-mobile"
 topic_list_tiles_wide_format_categories:
