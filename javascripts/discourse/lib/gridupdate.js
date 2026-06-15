@@ -1,52 +1,159 @@
+import { getURLWithCDN } from "discourse/lib/get-url";
 import loadScript from "discourse/lib/load-script";
 
-function resizeGridItem(item, isSideBySide, rowHeight, rowGap) {
-  loadScript(settings.theme_uploads.imagesloaded).then(() => {
-    //eslint-disable-next-line no-undef
-    imagesLoaded(item, function () {
-      let contentHeight = 0;
+const DEFAULT_ROW_SPAN = 44;
+let imagesLoadedPromise;
+let resizeFrame;
+const pendingItems = new Set();
 
-      if (isSideBySide) {
-        // Only use the height of the first child
-        let firstChild = item.children[0];
-        if (firstChild) {
-          contentHeight = firstChild.getBoundingClientRect().height;
-        }
-      } else {
-        // Sum all children's heights
-        Array.from(item.children).forEach((child) => {
-          contentHeight += child.getBoundingClientRect().height;
-        });
-      }
+function ensureImagesLoaded() {
+  if (!imagesLoadedPromise) {
+    imagesLoadedPromise = loadScript(
+      getURLWithCDN(settings.theme_uploads.imagesloaded)
+    );
+  }
 
-      let rowSpan = Math.ceil((contentHeight + rowGap) / (rowHeight + rowGap));
-      if (rowSpan !== rowSpan) {
-        rowSpan = 1;
-      }
-      item.style.gridRowEnd = "span " + rowSpan;
+  return imagesLoadedPromise;
+}
+
+function getGridMetrics() {
+  const grid = document.querySelector(".tiles-style tbody");
+
+  if (!grid) {
+    return null;
+  }
+
+  return {
+    rowHeight:
+      parseInt(window.getComputedStyle(grid).getPropertyValue("grid-auto-rows"), 10) ||
+      4,
+    rowGap:
+      parseInt(window.getComputedStyle(grid).getPropertyValue("grid-row-gap"), 10) ||
+      4,
+  };
+}
+
+function getCurrentRowSpan(item) {
+  const inlineSpan = item.style.gridRowEnd?.match(/span\s+(\d+)/)?.[1];
+  if (inlineSpan) {
+    return parseInt(inlineSpan, 10);
+  }
+
+  const computedSpan = window
+    .getComputedStyle(item)
+    .gridRowEnd?.match(/span\s+(\d+)/)?.[1];
+
+  return parseInt(computedSpan, 10) || DEFAULT_ROW_SPAN;
+}
+
+export function itemMediaPending(item) {
+  if (!item) {
+    return false;
+  }
+
+  if (item.querySelector("[data-tlp-media-pending]")) {
+    return true;
+  }
+
+  return Array.from(item.querySelectorAll("img")).some(
+    (img) => !img.complete || img.naturalHeight === 0
+  );
+}
+
+function getIsSideBySide() {
+  const topicList = document.querySelector(".topic-list.tiles-style");
+  const listArea = document.getElementById("list-area");
+
+  return (
+    topicList?.classList.contains("side-by-side") &&
+    listArea &&
+    listArea.offsetWidth > 900
+  );
+}
+
+function calculateContentHeight(item, isSideBySide) {
+  if (isSideBySide) {
+    const firstChild = item.children[0];
+    return firstChild ? firstChild.getBoundingClientRect().height : 0;
+  }
+
+  return Array.from(item.children).reduce(
+    (total, child) => total + child.getBoundingClientRect().height,
+    0
+  );
+}
+
+function applyRowSpan(item, rowSpan) {
+  const currentSpan = getCurrentRowSpan(item);
+  const pending = itemMediaPending(item);
+
+  rowSpan = Number.isFinite(rowSpan) ? rowSpan : DEFAULT_ROW_SPAN;
+  rowSpan = Math.max(rowSpan, 1);
+
+  if (pending) {
+    rowSpan = Math.max(rowSpan, currentSpan, DEFAULT_ROW_SPAN);
+  } else {
+    rowSpan = Math.max(rowSpan, DEFAULT_ROW_SPAN);
+  }
+
+  item.style.gridRowEnd = `span ${rowSpan}`;
+}
+
+function resizeGridItem(item, isSideBySide, metrics) {
+  const { rowHeight, rowGap } = metrics;
+  const contentHeight = calculateContentHeight(item, isSideBySide);
+  const rowSpan = Math.ceil((contentHeight + rowGap) / (rowHeight + rowGap));
+
+  applyRowSpan(item, rowSpan);
+}
+
+function resizeGridItemWithImages(item, isSideBySide, metrics) {
+  return ensureImagesLoaded().then(() => {
+    return new Promise((resolve) => {
+      // eslint-disable-next-line no-undef
+      imagesLoaded(item, () => {
+        resizeGridItem(item, isSideBySide, metrics);
+        resolve();
+      });
+    });
+  });
+}
+
+export function scheduleGridItemResize(item) {
+  if (!item) {
+    return;
+  }
+
+  pendingItems.add(item);
+
+  if (resizeFrame) {
+    return;
+  }
+
+  resizeFrame = requestAnimationFrame(() => {
+    resizeFrame = null;
+    const metrics = getGridMetrics();
+
+    if (!metrics) {
+      pendingItems.clear();
+      return;
+    }
+
+    const isSideBySide = getIsSideBySide();
+    const items = [...pendingItems];
+    pendingItems.clear();
+
+    items.forEach((gridItem) => {
+      resizeGridItemWithImages(gridItem, isSideBySide, metrics);
     });
   });
 }
 
 function resizeAllGridItems(isSideBySide) {
-  const allItems = document.getElementsByClassName("topic-list-item");
-  let grid = false;
+  const items = document.getElementsByClassName("topic-list-item");
 
-  grid = document.getElementsByTagName("tbody")[0];
-
-  if (!grid) {
-    return;
-  }
-  const rowHeight = parseInt(
-    window.getComputedStyle(grid).getPropertyValue("grid-auto-rows"),
-    10
-  );
-  const rowGap = parseInt(
-    window.getComputedStyle(grid).getPropertyValue("grid-row-gap"),
-    10
-  );
-  for (let x = 0; x < allItems.length; x++) {
-    resizeGridItem(allItems[x], isSideBySide, rowHeight, rowGap);
+  for (let i = 0; i < items.length; i++) {
+    scheduleGridItemResize(items[i]);
   }
 }
 

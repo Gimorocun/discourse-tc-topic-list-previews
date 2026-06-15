@@ -66,10 +66,9 @@ export default apiInitializer("0.8", (api) => {
     loadScript(getURLWithCDN(settings.theme_uploads.imagesloaded)).then(() => {
       if (document.querySelector(".tiles-style")) {
         //eslint-disable-next-line no-undef
-        imagesLoaded(
-          document.querySelector(".tiles-style"),
-          resizeAllGridItems()
-        );
+        imagesLoaded(document.querySelector(".tiles-style"), () => {
+          resizeAllGridItems();
+        });
       }
     });
   });

@@ -91,6 +91,14 @@ export default class PreviewsThumbnail extends Component {
     return !!this.videoPreview;
   }
 
+  get mediaPending() {
+    if (this.previewUrl || this.showVideoPreview || this.defaultThumbnailUrl) {
+      return false;
+    }
+
+    return this.mediaPreview === undefined;
+  }
+
   get isTiles() {
     return this.args.tiles ? "tiles-thumbnail" : "non-tiles-thumbnail";
   }
