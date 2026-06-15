@@ -512,15 +512,44 @@ button.topic-video-preview {
   }
 }
 
-.tlp-video-preview-modal {
-  .tlp-video-preview-modal__content {
-    aspect-ratio: 16 / 9;
-    background: #000;
-    max-height: 80vh;
+.tlp-video-preview-modal.d-modal {
+  .d-modal__container {
     overflow: hidden;
-    width: min(960px, 90vw);
+    width: fit-content;
+    max-width: min(95vw, 960px);
+  }
 
-    video,
+  .d-modal__body {
+    overflow: hidden;
+    padding: 0;
+  }
+
+  .tlp-video-preview-modal__content {
+    background: #000;
+    line-height: 0;
+    overflow: hidden;
+
+    &.is-embed {
+      width: min(90vw, 960px);
+      aspect-ratio: 16 / 9;
+    }
+
+    &.is-upload {
+      width: auto;
+      max-width: min(90vw, 960px);
+      max-height: 85vh;
+    }
+
+    video {
+      border: 0;
+      display: block;
+      height: auto;
+      max-height: 85vh;
+      max-width: min(90vw, 960px);
+      object-fit: contain;
+      width: auto;
+    }
+
     iframe {
       border: 0;
       display: block;
