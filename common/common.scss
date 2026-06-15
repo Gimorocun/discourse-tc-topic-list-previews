@@ -596,11 +596,19 @@ button.topic-video-preview {
   }
 }
 
-// .list-vote-count {
-//   float: left;
-//   padding-right: 3px;
-//   margin-top: 5px;
-// }
+.topic-actions {
+  .tlp-list-vote {
+    display: inline-block;
+    margin-right: 0.15em;
+    vertical-align: middle;
+  }
+
+  button.topic-vote.has-voted {
+    .d-icon {
+      color: var(--success);
+    }
+  }
+}
 button.list-button {
   background: transparent;
   border: none;

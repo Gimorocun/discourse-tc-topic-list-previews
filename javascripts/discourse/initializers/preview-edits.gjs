@@ -27,6 +27,8 @@ const INTERACTIVE_TILE_SELECTOR = [
   ".discourse-tag",
   ".discourse-tags",
   ".topic-actions",
+  ".tlp-list-vote",
+  ".topic-vote",
   ".topic-category",
   ".topic-status",
   ".topic-statuses",

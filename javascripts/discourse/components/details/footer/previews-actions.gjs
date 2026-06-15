@@ -9,6 +9,7 @@ import icon from "discourse/helpers/d-icon";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 import { i18n } from "discourse-i18n";
+import PreviewsVote from "./previews-vote";
 
 export default class PreviewsActionsComponent extends Component {
   @service siteSettings;
@@ -111,6 +112,10 @@ export default class PreviewsActionsComponent extends Component {
       return false;
     }
 
+    if (this.args.topic.can_vote) {
+      return false;
+    }
+
     return (
       this.args.topic.like_count ||
       this.args.topic.topic_post_can_like ||
@@ -159,6 +164,7 @@ export default class PreviewsActionsComponent extends Component {
   <template>
     <div class="topic-actions">
       <div class="inline">
+        <PreviewsVote @topic={{@topic}} />
         {{#if this.showLikeButton}}
           {{#if this.likeCount}}
             <span class="like-count">{{this.likeCount}}</span>

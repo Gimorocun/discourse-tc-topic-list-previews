@@ -5,7 +5,7 @@
   "authors": "Iryuu",
   "modifiers": {
     "csp_extensions": ["script_src: https://unpkg.com"],
-    "svg_icons": ["images"],
+    "svg_icons": ["images", "vote-up", "vote-up-filled"],
     "serialize_topic_excerpts": true,
     "topic_thumbnail_sizes": [
       [50, 50],
