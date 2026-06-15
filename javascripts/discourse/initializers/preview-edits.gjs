@@ -1,6 +1,6 @@
 import { trustHTML } from "@ember/template";
 import { apiInitializer } from "discourse/lib/api";
-import { getURLWithCDN } from "discourse/lib/get-url";
+import { getURL, getURLWithCDN } from "discourse/lib/get-url";
 import { wantsNewWindow } from "discourse/lib/intercept-click";
 import loadScript from "discourse/lib/load-script";
 import { resizeAllGridItems } from "../lib/gridupdate";
@@ -10,14 +10,12 @@ import PreviewsTilesThumbnail from "./../components/previews-tiles-thumbnail";
 
 const PLUGIN_ID = "discourse-tc-topic-list-previews";
 const INTERACTIVE_TILE_SELECTOR = [
-  "a",
   "button",
   "input",
   "label",
   "select",
   "textarea",
   "[role='button']",
-  "[role='link']",
   ".avatar",
   ".badge-category",
   ".badge-category__wrapper",
@@ -54,6 +52,20 @@ function destinationUrl(topic) {
       : topic.lastUnreadUrl;
 
   return topicUrl || topic.url;
+}
+
+function isTopicNavigationLink(element) {
+  const link = element?.closest?.("a");
+  if (!link) {
+    return false;
+  }
+
+  const href = link.getAttribute("href") || link.href;
+  return href && href.includes("/t/");
+}
+
+function openTopicInNewTab(topic) {
+  window.open(getURL(destinationUrl(topic)), "_blank", "noopener");
 }
 
 export default apiInitializer("0.8", (api) => {
@@ -251,7 +263,7 @@ export default apiInitializer("0.8", (api) => {
       }
 
       const result = next();
-      const { event, navigateToTopic, topic } = context;
+      const { event, topic } = context;
       const target = event
         .composedPath()
         .find((element) => element instanceof Element);
@@ -260,14 +272,18 @@ export default apiInitializer("0.8", (api) => {
         event.defaultPrevented ||
         wantsNewWindow(event) ||
         !target ||
-        typeof navigateToTopic !== "function" ||
         target.closest(INTERACTIVE_TILE_SELECTOR)
       ) {
         return result;
       }
 
+      const topicLink = target.closest("a");
+      if (topicLink && !isTopicNavigationLink(topicLink)) {
+        return result;
+      }
+
       event.preventDefault();
-      navigateToTopic(topic, destinationUrl(topic));
+      openTopicInNewTab(topic);
 
       return result;
     }
