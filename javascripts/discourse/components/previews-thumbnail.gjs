@@ -1,5 +1,4 @@
 import Component from "@glimmer/component";
-import { tracked } from "@glimmer/tracking";
 import { on } from "@ember/modifier";
 import { action } from "@ember/object";
 import { service } from "@ember/service";
@@ -15,8 +14,6 @@ export default class PreviewsThumbnail extends Component {
   @service topicVideoPreviews;
   @service modal;
 
-  @tracked loadedMediaPreview;
-
   get getDefaultThumbnail() {
     const defaultThumbnail = settings.topic_list_default_thumbnail_fallback;
     return defaultThumbnail ? settings.topic_list_default_thumbnail : false;
@@ -26,8 +23,12 @@ export default class PreviewsThumbnail extends Component {
     return topicHasPostThumbnail(this.args.topic);
   }
 
+  get mediaPreview() {
+    return this.topicVideoPreviews.getPreview(this.args.topic.id);
+  }
+
   get videoPreview() {
-    const preview = this.loadedMediaPreview;
+    const preview = this.mediaPreview;
     if (!preview?.video || preview.hasStandaloneImages) {
       return null;
     }
@@ -40,7 +41,7 @@ export default class PreviewsThumbnail extends Component {
       return false;
     }
 
-    const preview = this.loadedMediaPreview;
+    const preview = this.mediaPreview;
     if (preview === undefined) {
       return false;
     }
@@ -79,7 +80,7 @@ export default class PreviewsThumbnail extends Component {
       return null;
     }
 
-    if (this.loadedMediaPreview === undefined) {
+    if (this.mediaPreview === undefined) {
       return null;
     }
 
@@ -102,20 +103,12 @@ export default class PreviewsThumbnail extends Component {
     }
   }
 
-  loadVideoPreview = modifier((element, [topic, fetchGeneration]) => {
-    this.loadedMediaPreview = undefined;
+  loadVideoPreview = modifier(() => {
+    if (this.mediaPreview !== undefined) {
+      return;
+    }
 
-    let cancelled = false;
-
-    this.topicVideoPreviews.loadPreview(topic).then((preview) => {
-      if (!cancelled) {
-        this.loadedMediaPreview = preview;
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
+    this.topicVideoPreviews.loadPreview(this.args.topic);
   });
 
   addHasThumbnailClass = modifier((element) => {
@@ -146,64 +139,58 @@ export default class PreviewsThumbnail extends Component {
   }
 
   <template>
-    <div
-      class="previews-thumbnail-root"
-      {{this.loadVideoPreview
-        @topic
-        this.topicVideoPreviews.fetchGeneration
-      }}
-    >
-      {{#if this.previewUrl}}
-        <a href={{this.destinationUrl}} {{this.addHasThumbnailClass}}>
+    {{#if this.previewUrl}}
+      <a href={{this.destinationUrl}} {{this.addHasThumbnailClass}}>
+        <img
+          class={{concatClass "thumbnail" this.isTiles}}
+          src={{this.previewUrl}}
+          loading="lazy"
+        />
+      </a>
+    {{else if this.showVideoPreview}}
+      <button
+        type="button"
+        class={{concatClass
+          "topic-video-preview"
+          "thumbnail"
+          this.isTiles
+        }}
+        aria-label={{i18n (themePrefix "tlp.video_preview.play_video")}}
+        {{this.addHasThumbnailClass}}
+        {{on "click" this.openVideoModal}}
+      >
+        {{#if this.videoPreview.poster}}
           <img
-            class={{concatClass "thumbnail" this.isTiles}}
-            src={{this.previewUrl}}
+            class="video-preview-poster"
+            src={{this.videoPreview.poster}}
             loading="lazy"
+            alt=""
           />
-        </a>
-      {{else if this.showVideoPreview}}
-        <button
-          type="button"
-          class={{concatClass
-            "topic-video-preview"
-            "thumbnail"
-            this.isTiles
-          }}
-          aria-label={{i18n (themePrefix "tlp.video_preview.play_video")}}
-          {{this.addHasThumbnailClass}}
-          {{on "click" this.openVideoModal}}
-        >
-          {{#if this.videoPreview.poster}}
-            <img
-              class="video-preview-poster"
-              src={{this.videoPreview.poster}}
-              loading="lazy"
-              alt=""
-            />
-          {{else if this.videoPreview.url}}
-            <video
-              class="video-preview-media"
-              src={{this.videoPreview.url}}
-              muted
-              playsinline
-              preload="metadata"
-            ></video>
-          {{else}}
-            <span class="video-preview-placeholder"></span>
-          {{/if}}
-          <span class="video-preview-play-icon">
-            {{dIcon "play"}}
-          </span>
-        </button>
-      {{else if this.defaultThumbnailUrl}}
-        <a href={{this.destinationUrl}} {{this.addHasThumbnailClass}}>
-          <img
-            class={{concatClass "thumbnail" this.isTiles}}
-            src={{this.defaultThumbnailUrl}}
-            loading="lazy"
-          />
-        </a>
-      {{/if}}
-    </div>
+        {{else if this.videoPreview.url}}
+          <video
+            class="video-preview-media"
+            src={{this.videoPreview.url}}
+            muted
+            playsinline
+            preload="metadata"
+          ></video>
+        {{else}}
+          <span class="video-preview-placeholder"></span>
+        {{/if}}
+        <span class="video-preview-play-icon">
+          {{dIcon "play"}}
+        </span>
+      </button>
+    {{else if this.defaultThumbnailUrl}}
+      <a href={{this.destinationUrl}} {{this.addHasThumbnailClass}}>
+        <img
+          class={{concatClass "thumbnail" this.isTiles}}
+          src={{this.defaultThumbnailUrl}}
+          loading="lazy"
+        />
+      </a>
+    {{else}}
+      <span {{this.loadVideoPreview}} hidden></span>
+    {{/if}}
   </template>
 }
