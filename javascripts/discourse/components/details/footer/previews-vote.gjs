@@ -128,23 +128,21 @@ export default class PreviewsVoteComponent extends Component {
 
   <template>
     {{#if this.showVoteButton}}
-      <span class="tlp-list-vote list-vote-count">
+      <DButton
+        @action={{this.toggleVote}}
+        class={{concatClass
+          "list-button btn-transparent topic-vote list-vote-count"
+          this.voteClass
+        }}
+        title={{this.voteTitle}}
+        disabled={{this.voteDisabled}}
+        data-topic_id={{@topic.id}}
+      >
         {{#if this.voteCount}}
           <span class="vote-count">{{this.voteCount}}</span>
         {{/if}}
-        <DButton
-          @action={{this.toggleVote}}
-          class={{concatClass
-            "list-button btn-transparent topic-vote"
-            this.voteClass
-          }}
-          title={{this.voteTitle}}
-          disabled={{this.voteDisabled}}
-          data-topic_id={{@topic.id}}
-        >
-          {{icon this.voteIcon}}
-        </DButton>
-      </span>
+        {{icon this.voteIcon}}
+      </DButton>
     {{/if}}
   </template>
 }

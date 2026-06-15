@@ -597,12 +597,6 @@ button.topic-video-preview {
 }
 
 .topic-actions {
-  .tlp-list-vote {
-    display: inline-block;
-    margin-right: 0.15em;
-    vertical-align: middle;
-  }
-
   button.topic-vote.has-voted {
     .d-icon {
       color: var(--success);
