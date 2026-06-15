@@ -3,11 +3,11 @@ import { dependentKeyCompat } from "@ember/object/compat";
 import Service, { service } from "@ember/service";
 import Site from "discourse/models/site";
 
-const thumbnailsTopicLists =
-  settings.topic_list_thumbnails_topic_lists.split("|");
+const thumbnailsTopicLists = settings.topic_list_thumbnails_topic_lists.split("|");
 const tilesTopicLists = settings.topic_list_tiles_topic_lists.split("|");
 const excerptsTopicLists = settings.topic_list_excerpts_topic_lists.split("|");
 const actionsTopicLists = settings.topic_list_actions_topic_lists.split("|");
+const wideFormatTopicLists = settings.topic_list_tiles_wide_format_topic_lists.split("|");
 
 const thumbnailCategories = settings.topic_list_thumbnails_categories
   .split("|")
@@ -33,6 +33,7 @@ const thumbnailTags = settings.topic_list_thumbnails_tags.split("|");
 const excerptTags = settings.topic_list_excerpts_tags.split("|");
 const tilesTags = settings.topic_list_tiles_tags.split("|");
 const actionTags = settings.topic_list_actions_tags.split("|");
+const wideFormatTags = settings.topic_list_tiles_wide_format_tags.split("|");
 
 export default class TopicListPreviewsService extends Service {
   @service router;
@@ -58,9 +59,17 @@ export default class TopicListPreviewsService extends Service {
     return this.discovery.tag?.name;
   }
 
-  @computed("viewingCategoryId")
+  @computed(
+    "viewingCategoryId",
+    "viewingTagName",
+    "currentTopicListRoute"
+  )
   get wideFormat() {
-    return wideFormatCategories.includes(this.viewingCategoryId);
+    return (
+      wideFormatCategories.includes(this.viewingCategoryId) ||
+      wideFormatTags.includes(this.viewingTagName) ||
+      this.enabledForCurrentTopicListRouteType("wideFormat")
+    );
   }
 
   enabledForCurrentTopicListRouteType(infoType) {
@@ -78,6 +87,9 @@ export default class TopicListPreviewsService extends Service {
         break;
       case "actions":
         checkList = actionsTopicLists;
+        break;
+      case "wideFormat":
+        checkList = wideFormatTopicLists;
     }
 
     let currentTopicListRoute = this.currentTopicListRoute;

@@ -90,12 +90,23 @@ topic_list_tiles_larger_featured_tiles:
   type: bool
   description:
     en: "Make the tiles with featured tags larger"
+topic_list_tiles_wide_format_topic_lists:
+  type: list
+  default: ""
+  description:
+    en: "The lists that will use wide format for tiles. Can be one of latest|new|unread|top|tag|suggested|activity-topics|activity-portfolio|latest-mobile|new-mobile|unread-mobile|top-mobile|tag-mobile|suggested-mobile|activity-topics-mobile|activity-portfolio-mobile"
 topic_list_tiles_wide_format_categories:
   type: list
   list_type: category
   default: ""
   description:
     en: "The categories that will use wide format (places image on left instead of top) for tiles when list area is wide enough"
+topic_list_tiles_wide_format_tags:
+  type: list
+  list_type: tag
+  default: ""
+  description:
+    en: "The tags that will use wide format for tiles when list area is wide enough"
 topic_list_portfolio:
   default: true
   type: bool
