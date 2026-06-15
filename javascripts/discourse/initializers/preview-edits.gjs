@@ -1,6 +1,6 @@
 import { trustHTML } from "@ember/template";
 import { apiInitializer } from "discourse/lib/api";
-import { getURL, getURLWithCDN } from "discourse/lib/get-url";
+import getURL, { getURLWithCDN } from "discourse/lib/get-url";
 import { wantsNewWindow } from "discourse/lib/intercept-click";
 import loadScript from "discourse/lib/load-script";
 import { resizeAllGridItems } from "../lib/gridupdate";
