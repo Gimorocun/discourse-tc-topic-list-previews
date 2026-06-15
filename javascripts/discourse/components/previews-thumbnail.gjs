@@ -1,4 +1,5 @@
 import Component from "@glimmer/component";
+import { tracked } from "@glimmer/tracking";
 import { on } from "@ember/modifier";
 import { action } from "@ember/object";
 import { service } from "@ember/service";
@@ -14,6 +15,8 @@ export default class PreviewsThumbnail extends Component {
   @service topicVideoPreviews;
   @service modal;
 
+  @tracked loadedMediaPreview;
+
   get getDefaultThumbnail() {
     const defaultThumbnail = settings.topic_list_default_thumbnail_fallback;
     return defaultThumbnail ? settings.topic_list_default_thumbnail : false;
@@ -23,12 +26,8 @@ export default class PreviewsThumbnail extends Component {
     return topicHasPostThumbnail(this.args.topic);
   }
 
-  get mediaPreview() {
-    return this.topicVideoPreviews.getPreview(this.args.topic.id);
-  }
-
   get videoPreview() {
-    const preview = this.mediaPreview;
+    const preview = this.loadedMediaPreview;
     if (!preview?.video || preview.hasStandaloneImages) {
       return null;
     }
@@ -41,7 +40,7 @@ export default class PreviewsThumbnail extends Component {
       return false;
     }
 
-    const preview = this.mediaPreview;
+    const preview = this.loadedMediaPreview;
     if (preview === undefined) {
       return false;
     }
@@ -80,7 +79,7 @@ export default class PreviewsThumbnail extends Component {
       return null;
     }
 
-    if (this.mediaPreview === undefined) {
+    if (this.loadedMediaPreview === undefined) {
       return null;
     }
 
@@ -104,11 +103,20 @@ export default class PreviewsThumbnail extends Component {
   }
 
   loadVideoPreview = modifier(() => {
-    if (this.mediaPreview !== undefined) {
-      return;
-    }
+    const topic = this.args.topic;
+    this.loadedMediaPreview = undefined;
 
-    this.topicVideoPreviews.loadPreview(this.args.topic);
+    let cancelled = false;
+
+    this.topicVideoPreviews.loadPreview(topic).then((preview) => {
+      if (!cancelled) {
+        this.loadedMediaPreview = preview;
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
   });
 
   addHasThumbnailClass = modifier((element) => {
