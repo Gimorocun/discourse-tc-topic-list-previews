@@ -1,12 +1,10 @@
 import { tracked } from "@glimmer/tracking";
 import Service from "@ember/service";
 import { ajax } from "discourse/lib/ajax";
-import {
-  extractVideoPreviewFromCooked,
-  topicHasPostThumbnail,
-} from "../lib/topic-video-preview";
+import { parseTopicPreviewFromCooked } from "../lib/topic-video-preview";
 
 const MAX_CONCURRENT_REQUESTS = 4;
+const EMPTY_PREVIEW = { video: null, hasStandaloneImages: false };
 
 export default class TopicVideoPreviewsService extends Service {
   @tracked cacheRevision = 0;
@@ -23,8 +21,8 @@ export default class TopicVideoPreviewsService extends Service {
   }
 
   loadPreview(topic) {
-    if (!topic?.id || topicHasPostThumbnail(topic)) {
-      return Promise.resolve(null);
+    if (!topic?.id) {
+      return Promise.resolve(EMPTY_PREVIEW);
     }
 
     const cached = this.#cache.get(topic.id);
@@ -59,9 +57,9 @@ export default class TopicVideoPreviewsService extends Service {
           job.resolve(preview);
         })
         .catch(() => {
-          this.#cache.set(job.topic.id, null);
+          this.#cache.set(job.topic.id, EMPTY_PREVIEW);
           this.cacheRevision++;
-          job.resolve(null);
+          job.resolve(EMPTY_PREVIEW);
         })
         .finally(() => {
           this.#activeRequests--;
@@ -77,6 +75,6 @@ export default class TopicVideoPreviewsService extends Service {
     });
 
     const cooked = result?.post_stream?.posts?.[0]?.cooked;
-    return extractVideoPreviewFromCooked(cooked);
+    return parseTopicPreviewFromCooked(cooked);
   }
 }

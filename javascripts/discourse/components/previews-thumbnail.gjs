@@ -23,8 +23,34 @@ export default class PreviewsThumbnail extends Component {
     return topicHasPostThumbnail(this.args.topic);
   }
 
-  get previewUrl() {
+  get mediaPreview() {
+    return this.topicVideoPreviews.getPreview(this.args.topic.id);
+  }
+
+  get videoPreview() {
+    const preview = this.mediaPreview;
+    if (!preview?.video || preview.hasStandaloneImages) {
+      return null;
+    }
+
+    return preview.video;
+  }
+
+  get canShowImageThumbnail() {
     if (!this.hasPostThumbnail) {
+      return false;
+    }
+
+    const preview = this.mediaPreview;
+    if (preview === undefined) {
+      return false;
+    }
+
+    return !(preview.video && !preview.hasStandaloneImages);
+  }
+
+  get previewUrl() {
+    if (!this.canShowImageThumbnail) {
       return null;
     }
 
@@ -50,22 +76,15 @@ export default class PreviewsThumbnail extends Component {
   }
 
   get defaultThumbnailUrl() {
-    if (this.hasPostThumbnail || this.videoPreview) {
+    if (this.hasPostThumbnail || this.showVideoPreview) {
       return null;
     }
 
-    const cachedPreview = this.topicVideoPreviews.getPreview(
-      this.args.topic.id
-    );
-    if (cachedPreview === undefined) {
+    if (this.mediaPreview === undefined) {
       return null;
     }
 
     return this.getDefaultThumbnail;
-  }
-
-  get videoPreview() {
-    return this.topicVideoPreviews.getPreview(this.args.topic.id);
   }
 
   get showVideoPreview() {
@@ -85,7 +104,7 @@ export default class PreviewsThumbnail extends Component {
   }
 
   loadVideoPreview = modifier(() => {
-    if (this.hasPostThumbnail || this.previewUrl) {
+    if (this.mediaPreview !== undefined) {
       return;
     }
 

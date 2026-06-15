@@ -98,13 +98,22 @@ function parseUploadSource(sourceUrl, posterUrl = null) {
   };
 }
 
-export function extractVideoPreviewFromCooked(cookedHtml) {
-  if (!cookedHtml) {
-    return null;
+function isDecorativeImage(img) {
+  if (img.classList.contains("emoji")) {
+    return true;
   }
 
-  const doc = new DOMParser().parseFromString(cookedHtml, "text/html");
+  if (img.closest(".onebox-avatar-inline, .avatar, .site-icon")) {
+    return true;
+  }
 
+  const width = parseInt(img.getAttribute("width"), 10);
+  const height = parseInt(img.getAttribute("height"), 10);
+
+  return width && height && width <= 20 && height <= 20;
+}
+
+function extractVideoPreviewFromDoc(doc) {
   const placeholder = doc.querySelector(".video-placeholder-container");
   if (placeholder) {
     const preview = parseUploadSource(
@@ -156,6 +165,41 @@ export function extractVideoPreviewFromCooked(cookedHtml) {
   }
 
   return null;
+}
+
+function postHasStandaloneImagesFromDoc(doc) {
+  const content = doc.cloneNode(true);
+
+  content
+    .querySelectorAll(
+      ".video-placeholder-container, .video-onebox, .onebox.video-onebox, video"
+    )
+    .forEach((el) => el.remove());
+
+  for (const img of content.querySelectorAll("img[src]")) {
+    if (!isDecorativeImage(img)) {
+      return true;
+    }
+  }
+
+  return !!content.querySelector(".lightbox-wrapper, .image-wrapper");
+}
+
+export function parseTopicPreviewFromCooked(cookedHtml) {
+  if (!cookedHtml) {
+    return { video: null, hasStandaloneImages: false };
+  }
+
+  const doc = new DOMParser().parseFromString(cookedHtml, "text/html");
+
+  return {
+    video: extractVideoPreviewFromDoc(doc),
+    hasStandaloneImages: postHasStandaloneImagesFromDoc(doc),
+  };
+}
+
+export function extractVideoPreviewFromCooked(cookedHtml) {
+  return parseTopicPreviewFromCooked(cookedHtml).video;
 }
 
 export function topicHasPostThumbnail(topic) {
