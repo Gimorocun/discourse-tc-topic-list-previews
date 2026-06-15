@@ -96,7 +96,24 @@ export default class PreviewsThumbnail extends Component {
       return false;
     }
 
-    return this.mediaPreview === undefined;
+    if (this.mediaPreview !== undefined) {
+      return false;
+    }
+
+    if (this.hasPostThumbnail || this.getDefaultThumbnail) {
+      return true;
+    }
+
+    return false;
+  }
+
+  get showThumbnailArea() {
+    return (
+      this.mediaPending ||
+      this.previewUrl ||
+      this.showVideoPreview ||
+      this.defaultThumbnailUrl
+    );
   }
 
   get isTiles() {

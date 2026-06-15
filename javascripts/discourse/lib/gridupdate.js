@@ -55,8 +55,18 @@ export function itemMediaPending(item) {
     return true;
   }
 
-  return Array.from(item.querySelectorAll("img")).some(
+  return Array.from(item.querySelectorAll(".topic-thumbnail img")).some(
     (img) => !img.complete || img.naturalHeight === 0
+  );
+}
+
+function itemExpectsMedia(item) {
+  if (itemMediaPending(item)) {
+    return true;
+  }
+
+  return !!item.querySelector(
+    ".topic-thumbnail img, .topic-thumbnail video, .topic-thumbnail button.topic-video-preview"
   );
 }
 
@@ -86,13 +96,17 @@ function calculateContentHeight(item, isSideBySide) {
 function applyRowSpan(item, rowSpan) {
   const currentSpan = getCurrentRowSpan(item);
   const pending = itemMediaPending(item);
+  const expectsMedia = itemExpectsMedia(item);
 
-  rowSpan = Number.isFinite(rowSpan) ? rowSpan : DEFAULT_ROW_SPAN;
+  if (!Number.isFinite(rowSpan)) {
+    rowSpan = expectsMedia ? DEFAULT_ROW_SPAN : 1;
+  }
+
   rowSpan = Math.max(rowSpan, 1);
 
   if (pending) {
     rowSpan = Math.max(rowSpan, currentSpan, DEFAULT_ROW_SPAN);
-  } else {
+  } else if (expectsMedia) {
     rowSpan = Math.max(rowSpan, DEFAULT_ROW_SPAN);
   }
 
