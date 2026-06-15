@@ -15,6 +15,11 @@
     height: var(--thumbnail-height-mobile);
     width: var(--thumbnail-width-mobile);
   }
+
+  button.topic-video-preview.non-tiles-thumbnail {
+    height: var(--thumbnail-height-mobile);
+    width: var(--thumbnail-width-mobile);
+  }
 }
 
 td .main-link {

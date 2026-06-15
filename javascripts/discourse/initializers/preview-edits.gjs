@@ -30,6 +30,7 @@ const INTERACTIVE_TILE_SELECTOR = [
   ".topic-category",
   ".topic-status",
   ".topic-statuses",
+  ".topic-video-preview",
 ].join(",");
 
 const previewsTilesThumbnail = <template>
