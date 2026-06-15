@@ -84,14 +84,6 @@ img.non-tiles-thumbnail {
   width: var(--thumbnail-width);
 }
 
-img.tiles-thumbnail,
-button.topic-video-preview.tiles-thumbnail {
-  display: block;
-  height: var(--thumbnail-height);
-  object-fit: cover;
-  width: 100%;
-}
-
 .discourse-tags {
   display: flex;
 
@@ -188,18 +180,19 @@ button.topic-video-preview.tiles-thumbnail {
     }
   }
 
-  .topic-thumbnail {
+  &:not(.side-by-side) .topic-thumbnail {
     grid-area: photo;
     display: block;
     overflow: hidden;
     padding: 0;
+
+    // z-index: -1;
     width: 100%;
 
     img.thumbnail,
     button.topic-video-preview.thumbnail {
-      display: block;
       height: var(--thumbnail-height);
-      object-fit: cover;
+      max-height: var(--thumbnail-height);
       width: 100%;
     }
   }
@@ -441,23 +434,21 @@ button.topic-video-preview.tiles-thumbnail {
         }
 
         .topic-thumbnail {
-          flex: 0 0 var(--thumbnail-width);
-          height: var(--thumbnail-height);
-          margin: 0;
+          flex: 1;
+          width: 100%;
           overflow: hidden;
+          margin: 0;
+
+          // padding-top: 56.25%;
           position: relative;
-          width: var(--thumbnail-width);
           z-index: 100;
 
-          img,
-          button.topic-video-preview {
-            height: 100%;
-            left: 0;
-            object-fit: cover;
+          img {
             position: absolute;
-            top: 0;
-            transform: none;
+            top: 50%;
+            left: 50%;
             width: 100%;
+            transform: translate(-50%, -50%);
           }
         }
 
@@ -466,6 +457,15 @@ button.topic-video-preview.tiles-thumbnail {
         }
       }
     }
+  }
+}
+
+.topic-list.tiles-style:not(.side-by-side) {
+  img.thumbnail.tiles-thumbnail,
+  button.topic-video-preview.tiles-thumbnail {
+    height: var(--thumbnail-height);
+    max-height: var(--thumbnail-height);
+    width: 100%;
   }
 }
 
@@ -565,18 +565,6 @@ button.topic-video-preview {
       border: 0;
       display: block;
       height: 100%;
-      width: 100%;
-    }
-  }
-}
-
-.topic-list.tiles-style {
-  button.topic-video-preview.thumbnail {
-    .video-preview-poster,
-    .video-preview-media,
-    .video-preview-placeholder {
-      height: 100%;
-      object-fit: cover;
       width: 100%;
     }
   }
