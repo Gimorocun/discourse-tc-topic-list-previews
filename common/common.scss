@@ -84,6 +84,14 @@ img.non-tiles-thumbnail {
   width: var(--thumbnail-width);
 }
 
+img.tiles-thumbnail,
+button.topic-video-preview.tiles-thumbnail {
+  display: block;
+  height: var(--thumbnail-height);
+  object-fit: cover;
+  width: 100%;
+}
+
 .discourse-tags {
   display: flex;
 
@@ -183,14 +191,16 @@ img.non-tiles-thumbnail {
   .topic-thumbnail {
     grid-area: photo;
     display: block;
+    overflow: hidden;
     padding: 0;
-
-    // z-index: -1;
     width: 100%;
 
-    img {
+    img.thumbnail,
+    button.topic-video-preview.thumbnail {
+      display: block;
+      height: var(--thumbnail-height);
+      object-fit: cover;
       width: 100%;
-      height: auto;
     }
   }
 
@@ -431,22 +441,23 @@ img.non-tiles-thumbnail {
         }
 
         .topic-thumbnail {
-          flex: 1;
-          width: 100%;
-          overflow: hidden;
+          flex: 0 0 var(--thumbnail-width);
+          height: var(--thumbnail-height);
           margin: 0;
-
-          // padding-top: 56.25%;
+          overflow: hidden;
           position: relative;
+          width: var(--thumbnail-width);
           z-index: 100;
 
           img,
           button.topic-video-preview {
+            height: 100%;
+            left: 0;
+            object-fit: cover;
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 0;
+            transform: none;
             width: 100%;
-            transform: translate(-50%, -50%);
           }
         }
 
@@ -560,13 +571,13 @@ button.topic-video-preview {
 }
 
 .topic-list.tiles-style {
-  button.topic-video-preview {
-    width: 100%;
-
-    img,
-    video {
+  button.topic-video-preview.thumbnail {
+    .video-preview-poster,
+    .video-preview-media,
+    .video-preview-placeholder {
+      height: 100%;
+      object-fit: cover;
       width: 100%;
-      height: auto;
     }
   }
 }
