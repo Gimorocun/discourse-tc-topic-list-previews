@@ -61,6 +61,21 @@ export default apiInitializer("0.8", (api) => {
   const topicListPreviewsService = api.container.lookup(
     "service:topic-list-previews"
   );
+  const topicVideoPreviewsService = api.container.lookup(
+    "service:topic-video-previews"
+  );
+
+  const refreshVideoPreviews = () => {
+    topicVideoPreviewsService.bumpFetchGeneration();
+  };
+
+  api.onPageChange(refreshVideoPreviews);
+
+  window.addEventListener("pageshow", (event) => {
+    if (event.persisted) {
+      refreshVideoPreviews();
+    }
+  });
 
   api.onPageChange(() => {
     loadScript(getURLWithCDN(settings.theme_uploads.imagesloaded)).then(() => {

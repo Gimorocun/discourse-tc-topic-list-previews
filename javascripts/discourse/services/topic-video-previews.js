@@ -1,3 +1,4 @@
+import { tracked } from "@glimmer/tracking";
 import Service from "@ember/service";
 import { ajax } from "discourse/lib/ajax";
 import { parseTopicPreviewFromCooked } from "../lib/topic-video-preview";
@@ -5,6 +6,12 @@ import { parseTopicPreviewFromCooked } from "../lib/topic-video-preview";
 const EMPTY_PREVIEW = { video: null, hasStandaloneImages: false };
 
 export default class TopicVideoPreviewsService extends Service {
+  @tracked fetchGeneration = 0;
+
+  bumpFetchGeneration() {
+    this.fetchGeneration++;
+  }
+
   async loadPreview(topic) {
     if (!topic?.id) {
       return EMPTY_PREVIEW;
@@ -12,7 +19,11 @@ export default class TopicVideoPreviewsService extends Service {
 
     try {
       const result = await ajax(`/t/${topic.id}.json`, {
-        data: { track_visit: false },
+        data: {
+          track_visit: false,
+          _: Date.now(),
+        },
+        cache: false,
       });
 
       const cooked = result?.post_stream?.posts?.[0]?.cooked;

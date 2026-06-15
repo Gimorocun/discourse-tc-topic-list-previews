@@ -102,8 +102,7 @@ export default class PreviewsThumbnail extends Component {
     }
   }
 
-  loadVideoPreview = modifier(() => {
-    const topic = this.args.topic;
+  loadVideoPreview = modifier((element, [topic, fetchGeneration]) => {
     this.loadedMediaPreview = undefined;
 
     let cancelled = false;
@@ -147,58 +146,64 @@ export default class PreviewsThumbnail extends Component {
   }
 
   <template>
-    {{#if this.previewUrl}}
-      <a href={{this.destinationUrl}} {{this.addHasThumbnailClass}}>
-        <img
-          class={{concatClass "thumbnail" this.isTiles}}
-          src={{this.previewUrl}}
-          loading="lazy"
-        />
-      </a>
-    {{else if this.showVideoPreview}}
-      <button
-        type="button"
-        class={{concatClass
-          "topic-video-preview"
-          "thumbnail"
-          this.isTiles
-        }}
-        aria-label={{i18n (themePrefix "tlp.video_preview.play_video")}}
-        {{this.addHasThumbnailClass}}
-        {{on "click" this.openVideoModal}}
-      >
-        {{#if this.videoPreview.poster}}
+    <div
+      class="previews-thumbnail-root"
+      {{this.loadVideoPreview
+        @topic
+        this.topicVideoPreviews.fetchGeneration
+      }}
+    >
+      {{#if this.previewUrl}}
+        <a href={{this.destinationUrl}} {{this.addHasThumbnailClass}}>
           <img
-            class="video-preview-poster"
-            src={{this.videoPreview.poster}}
+            class={{concatClass "thumbnail" this.isTiles}}
+            src={{this.previewUrl}}
             loading="lazy"
-            alt=""
           />
-        {{else if this.videoPreview.url}}
-          <video
-            class="video-preview-media"
-            src={{this.videoPreview.url}}
-            muted
-            playsinline
-            preload="metadata"
-          ></video>
-        {{else}}
-          <span class="video-preview-placeholder"></span>
-        {{/if}}
-        <span class="video-preview-play-icon">
-          {{dIcon "play"}}
-        </span>
-      </button>
-    {{else if this.defaultThumbnailUrl}}
-      <a href={{this.destinationUrl}} {{this.addHasThumbnailClass}}>
-        <img
-          class={{concatClass "thumbnail" this.isTiles}}
-          src={{this.defaultThumbnailUrl}}
-          loading="lazy"
-        />
-      </a>
-    {{else}}
-      <span {{this.loadVideoPreview}} hidden></span>
-    {{/if}}
+        </a>
+      {{else if this.showVideoPreview}}
+        <button
+          type="button"
+          class={{concatClass
+            "topic-video-preview"
+            "thumbnail"
+            this.isTiles
+          }}
+          aria-label={{i18n (themePrefix "tlp.video_preview.play_video")}}
+          {{this.addHasThumbnailClass}}
+          {{on "click" this.openVideoModal}}
+        >
+          {{#if this.videoPreview.poster}}
+            <img
+              class="video-preview-poster"
+              src={{this.videoPreview.poster}}
+              loading="lazy"
+              alt=""
+            />
+          {{else if this.videoPreview.url}}
+            <video
+              class="video-preview-media"
+              src={{this.videoPreview.url}}
+              muted
+              playsinline
+              preload="metadata"
+            ></video>
+          {{else}}
+            <span class="video-preview-placeholder"></span>
+          {{/if}}
+          <span class="video-preview-play-icon">
+            {{dIcon "play"}}
+          </span>
+        </button>
+      {{else if this.defaultThumbnailUrl}}
+        <a href={{this.destinationUrl}} {{this.addHasThumbnailClass}}>
+          <img
+            class={{concatClass "thumbnail" this.isTiles}}
+            src={{this.defaultThumbnailUrl}}
+            loading="lazy"
+          />
+        </a>
+      {{/if}}
+    </div>
   </template>
 }
