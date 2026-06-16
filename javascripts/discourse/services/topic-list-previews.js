@@ -65,10 +65,21 @@ export default class TopicListPreviewsService extends Service {
     "currentTopicListRoute"
   )
   get wideFormat() {
+    return this.enabledForFeature(
+      wideFormatCategories,
+      wideFormatTags,
+      "wideFormat"
+    );
+  }
+
+  enabledForFeature(categoryList, tagList, infoType) {
+    if (categoryList.includes(this.viewingCategoryId)) {
+      return true;
+    }
+
     return (
-      wideFormatCategories.includes(this.viewingCategoryId) ||
-      wideFormatTags.includes(this.viewingTagName) ||
-      this.enabledForCurrentTopicListRouteType("wideFormat")
+      tagList.includes(this.viewingTagName) ||
+      this.enabledForCurrentTopicListRouteType(infoType)
     );
   }
 
@@ -153,32 +164,16 @@ export default class TopicListPreviewsService extends Service {
   get displayMode() {
     let displayMode = [];
 
-    if (
-      thumbnailCategories.includes(this.viewingCategoryId) ||
-      thumbnailTags.includes(this.viewingTagName) ||
-      this.enabledForCurrentTopicListRouteType("thumbnails")
-    ) {
+    if (this.enabledForFeature(thumbnailCategories, thumbnailTags, "thumbnails")) {
       displayMode.push("thumbnails");
     }
-    if (
-      tilesCategories.includes(this.viewingCategoryId) ||
-      tilesTags.includes(this.viewingTagName) ||
-      this.enabledForCurrentTopicListRouteType("tiles")
-    ) {
+    if (this.enabledForFeature(tilesCategories, tilesTags, "tiles")) {
       displayMode.push("tiles");
     }
-    if (
-      excerptCategories.includes(this.viewingCategoryId) ||
-      excerptTags.includes(this.viewingTagName) ||
-      this.enabledForCurrentTopicListRouteType("excerpts")
-    ) {
+    if (this.enabledForFeature(excerptCategories, excerptTags, "excerpts")) {
       displayMode.push("excerpts");
     }
-    if (
-      actionCategories.includes(this.viewingCategoryId) ||
-      actionTags.includes(this.viewingTagName) ||
-      this.enabledForCurrentTopicListRouteType("actions")
-    ) {
+    if (this.enabledForFeature(actionCategories, actionTags, "actions")) {
       displayMode.push("actions");
     }
 
