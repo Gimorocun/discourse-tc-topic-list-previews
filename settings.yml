@@ -71,6 +71,11 @@ topic_list_set_category_defaults:
   type: bool
   description:
     en: "Set site topic list display settings as defaults for category topic lists."
+topic_list_category_priority:
+  type: list
+  default: ""
+  description:
+    en: "Features that match by category only. Choose from thumbnails|tiles|excerpts|actions|wideFormat. When enabled for a feature, its topic lists and tags settings are ignored."
 topic_list_dominant_color_background:
   default: tiles only
   type: enum

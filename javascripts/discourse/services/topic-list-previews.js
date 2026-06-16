@@ -35,6 +35,10 @@ const tilesTags = settings.topic_list_tiles_tags.split("|");
 const actionTags = settings.topic_list_actions_tags.split("|");
 const wideFormatTags = settings.topic_list_tiles_wide_format_tags.split("|");
 
+const categoryPriorityFeatures = settings.topic_list_category_priority
+  .split("|")
+  .filter(Boolean);
+
 export default class TopicListPreviewsService extends Service {
   @service router;
   @service discovery;
@@ -73,11 +77,12 @@ export default class TopicListPreviewsService extends Service {
   }
 
   enabledForFeature(categoryList, tagList, infoType) {
-    if (categoryList.includes(this.viewingCategoryId)) {
-      return true;
+    if (categoryPriorityFeatures.includes(infoType)) {
+      return categoryList.includes(this.viewingCategoryId);
     }
 
     return (
+      categoryList.includes(this.viewingCategoryId) ||
       tagList.includes(this.viewingTagName) ||
       this.enabledForCurrentTopicListRouteType(infoType)
     );
