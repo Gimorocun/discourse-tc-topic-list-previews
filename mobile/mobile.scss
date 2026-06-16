@@ -56,3 +56,47 @@ td .main-link {
     }
   }
 }
+
+.tlp-video-preview-modal.d-modal {
+  align-items: center;
+  justify-content: center;
+
+  .d-modal__container {
+    position: relative;
+    width: fit-content;
+    max-width: min(95vw, 100%);
+    height: auto;
+    max-height: min(85vh, calc(var(--composer-vh, 1dvh) * 85));
+    min-height: 0;
+    margin: auto;
+    padding-bottom: 0;
+
+    &.is-entering,
+    &.is-exiting {
+      animation: none;
+    }
+  }
+
+  .d-modal__body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .tlp-video-preview-modal__content.is-embed {
+    width: min(92vw, 960px);
+  }
+}
+
+html.keyboard-visible.mobile-view {
+  .tlp-video-preview-modal.d-modal {
+    height: 100%;
+
+    .d-modal__container {
+      height: auto;
+      min-height: 0;
+      max-height: min(85vh, calc(var(--composer-vh, 1dvh) * 85));
+    }
+  }
+}
