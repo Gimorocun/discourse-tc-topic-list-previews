@@ -77,6 +77,10 @@ export default class TopicListPreviewsService extends Service {
   }
 
   enabledForFeature(categoryList, tagList, infoType) {
+    alert(categoryPriorityFeatures)
+    alert(infoType)
+    console.log(categoryPriorityFeatures)
+    console.log(infoType)
     if (categoryPriorityFeatures.includes(infoType)) {
       return categoryList.includes(this.viewingCategoryId);
     }
