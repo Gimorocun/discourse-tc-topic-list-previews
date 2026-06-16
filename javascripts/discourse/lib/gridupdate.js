@@ -83,8 +83,7 @@ function getIsSideBySide() {
 
 function calculateContentHeight(item, isSideBySide) {
   if (isSideBySide) {
-    const firstChild = item.children[0];
-    return firstChild ? firstChild.getBoundingClientRect().height : 0;
+    return item.getBoundingClientRect().height;
   }
 
   return Array.from(item.children).reduce(
@@ -93,7 +92,12 @@ function calculateContentHeight(item, isSideBySide) {
   );
 }
 
-function applyRowSpan(item, rowSpan) {
+function applyRowSpan(item, rowSpan, isSideBySide) {
+  if (isSideBySide) {
+    item.style.gridRowEnd = "span 1";
+    return;
+  }
+
   const currentSpan = getCurrentRowSpan(item);
   const pending = itemMediaPending(item);
   const expectsMedia = itemExpectsMedia(item);
@@ -118,7 +122,7 @@ function resizeGridItem(item, isSideBySide, metrics) {
   const contentHeight = calculateContentHeight(item, isSideBySide);
   const rowSpan = Math.ceil((contentHeight + rowGap) / (rowHeight + rowGap));
 
-  applyRowSpan(item, rowSpan);
+  applyRowSpan(item, rowSpan, isSideBySide);
 }
 
 function resizeGridItemWithImages(item, isSideBySide, metrics) {

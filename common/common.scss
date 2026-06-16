@@ -394,11 +394,31 @@ img.non-tiles-thumbnail {
 
         .topic-list-item {
           flex-direction: row;
+          align-items: stretch;
           box-sizing: border-box;
           cursor: pointer;
           border-radius: 3px;
           grid-row-end: span 1;
           min-height: 190px;
+
+          > .topic-list-data:first-of-type {
+            display: flex;
+            flex: 0 0 38%;
+            max-width: 320px;
+            min-width: 180px;
+            padding: 0;
+
+            > span {
+              display: flex;
+              flex: 1;
+              width: 100%;
+            }
+          }
+
+          > .topic-list-data:last-of-type {
+            flex: 1;
+            min-width: 0;
+          }
         }
 
         .topic-details {
@@ -438,21 +458,38 @@ img.non-tiles-thumbnail {
 
         .topic-thumbnail {
           flex: 1;
+          align-self: stretch;
           width: 100%;
+          min-height: 190px;
+          height: 100%;
           overflow: hidden;
           margin: 0;
-
-          // padding-top: 56.25%;
           position: relative;
           z-index: 100;
 
-          img,
+          &[data-tlp-media-pending] {
+            aspect-ratio: auto;
+            min-height: 190px;
+          }
+
+          img.thumbnail,
           button.topic-video-preview {
             position: absolute;
-            top: 50%;
-            left: 50%;
+            inset: 0;
             width: 100%;
-            transform: translate(-50%, -50%);
+            height: 100%;
+            transform: none;
+            object-fit: cover;
+          }
+
+          button.topic-video-preview {
+            .video-preview-poster,
+            .video-preview-media,
+            .video-preview-placeholder {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
           }
         }
 
