@@ -64,8 +64,8 @@ function isTopicNavigationLink(element) {
   return href && href.includes("/t/");
 }
 
-function openTopicInNewTab(topic) {
-  window.open(getURL(destinationUrl(topic)), "_blank", "noopener");
+function navigateToTopicDestination(topic, navigateToTopic) {
+  navigateToTopic(topic, getURL(destinationUrl(topic)));
 }
 
 export default apiInitializer("0.8", (api) => {
@@ -263,7 +263,7 @@ export default apiInitializer("0.8", (api) => {
       }
 
       const result = next();
-      const { event, topic } = context;
+      const { event, topic, navigateToTopic } = context;
       const target = event
         .composedPath()
         .find((element) => element instanceof Element);
@@ -283,7 +283,7 @@ export default apiInitializer("0.8", (api) => {
       }
 
       event.preventDefault();
-      openTopicInNewTab(topic);
+      navigateToTopicDestination(topic, navigateToTopic);
 
       return result;
     }
