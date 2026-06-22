@@ -23,7 +23,6 @@ const INTERACTIVE_TILE_SELECTOR = [
   ".badge-posts",
   ".badge-wrapper",
   ".discourse-tag",
-  ".discourse-tags",
   ".topic-actions",
   ".topic-vote",
   ".list-vote-count",
