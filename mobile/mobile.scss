@@ -11,6 +11,10 @@
     float: left;
   }
 
+  .tlp-thumbnail-list:not(.tiles-style) .has-thumbnail .topic-thumbnail {
+    float: none;
+  }
+
   img.non-tiles-thumbnail {
     height: var(--thumbnail-height-mobile);
     width: var(--thumbnail-width-mobile);

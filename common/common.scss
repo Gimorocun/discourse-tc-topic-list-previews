@@ -101,7 +101,28 @@ img.non-tiles-thumbnail {
 .topic-list.tlp-thumbnail-list:not(.tiles-style) {
   .topic-list-item.has-thumbnail {
     td.main-link {
+      display: flex;
+      flex-direction: column;
       width: auto;
+
+      .link-top-line,
+      .link-bottom-line,
+      .topic-excerpt {
+        order: 1;
+        width: 100%;
+      }
+
+      .topic-thumbnail {
+        order: 2;
+        float: none;
+        margin-right: 0;
+        margin-top: 0.5em;
+
+        img.non-tiles-thumbnail,
+        button.topic-video-preview.non-tiles-thumbnail {
+          display: block;
+        }
+      }
     }
 
     td.tlp-list-meta {
