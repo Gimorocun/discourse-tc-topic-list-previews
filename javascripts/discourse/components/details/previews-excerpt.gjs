@@ -1,7 +1,7 @@
 import Component from "@glimmer/component";
 import { service } from "@ember/service";
 import { trustHTML } from "@ember/template";
-import truncateExcerpt from "../lib/truncate-excerpt";
+import truncateExcerpt from "../../lib/truncate-excerpt";
 
 export default class PreviewsExcerpt extends Component {
   @service topicListPreviews;
