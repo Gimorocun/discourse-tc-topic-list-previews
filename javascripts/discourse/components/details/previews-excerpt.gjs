@@ -1,12 +1,13 @@
 import Component from "@glimmer/component";
 import { service } from "@ember/service";
 import { trustHTML } from "@ember/template";
+import truncateExcerpt from "../lib/truncate-excerpt";
 
 export default class PreviewsExcerpt extends Component {
   @service topicListPreviews;
 
   get showExcerpt() {
-    return this.topicListPreviews.displayExcerpts;
+    return this.topicListPreviews.displayExcerpts && this.args.topic.hasExcerpt;
   }
 
   get destinationUrl() {
@@ -18,9 +19,13 @@ export default class PreviewsExcerpt extends Component {
   }
 
   get excerpt() {
-    return this.args.topic.show_latest_post_excerpt
-      ? trustHTML(this.args.topic.last_post_excerpt)
-      : trustHTML(this.args.topic.excerpt);
+    const raw = this.args.topic.show_latest_post_excerpt
+      ? this.args.topic.last_post_excerpt
+      : this.args.topic.excerpt;
+
+    return trustHTML(
+      truncateExcerpt(raw, settings.topic_list_excerpt_length)
+    );
   }
 
   <template>

@@ -5,6 +5,7 @@ import { wantsNewWindow } from "discourse/lib/intercept-click";
 import loadScript from "discourse/lib/load-script";
 import { resizeAllGridItems } from "../lib/gridupdate";
 import PreviewsDetails from "./../components/previews-details";
+import PreviewsExcerpt from "./../components/details/previews-excerpt";
 import PreviewsListMetaCell from "./../components/previews-list-meta-cell";
 import PreviewsListMetaHeader from "./../components/previews-list-meta-header";
 import PreviewsThumbnail from "./../components/previews-thumbnail";
@@ -272,12 +273,23 @@ export default apiInitializer("0.8", (api) => {
     </template>
   );
 
+  api.renderInOutlet(
+    "topic-list-main-link-bottom",
+    <template>
+      {{#unless topicListPreviewsService.displayTiles}}
+        {{#if topicListPreviewsService.displayExcerpts}}
+          <PreviewsExcerpt @topic={{@outletArgs.topic}} />
+        {{/if}}
+      {{/unless}}
+    </template>
+  );
+
   api.registerValueTransformer("topic-list-item-expand-pinned", ({ value }) => {
     if (
       !topicListPreviewsService.displayTiles &&
       topicListPreviewsService.displayExcerpts
     ) {
-      return true;
+      return false;
     }
     return value; // Return default value
   });
