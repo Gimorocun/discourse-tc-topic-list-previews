@@ -5,6 +5,8 @@ import { wantsNewWindow } from "discourse/lib/intercept-click";
 import loadScript from "discourse/lib/load-script";
 import { resizeAllGridItems } from "../lib/gridupdate";
 import PreviewsDetails from "./../components/previews-details";
+import PreviewsListMetaCell from "./../components/previews-list-meta-cell";
+import PreviewsListMetaHeader from "./../components/previews-list-meta-header";
 import PreviewsThumbnail from "./../components/previews-thumbnail";
 import PreviewsTilesThumbnail from "./../components/previews-tiles-thumbnail";
 
@@ -67,6 +69,27 @@ function navigateToTopicDestination(topic, navigateToTopic) {
   navigateToTopic(topic, getURL(destinationUrl(topic)));
 }
 
+function applyThumbnailListMetaLayout(columns, topicListPreviewsService) {
+  const metaColumnNames = ["posters", "replies", "views", "activity"];
+  const hasMetaColumns = metaColumnNames.some((name) => columns.has(name));
+
+  if (!hasMetaColumns) {
+    return;
+  }
+
+  topicListPreviewsService.listMetaIncludesPosters = columns.has("posters");
+
+  metaColumnNames.forEach((name) => columns.delete(name));
+  columns.add(
+    "tlp-meta",
+    {
+      header: PreviewsListMetaHeader,
+      item: PreviewsListMetaCell,
+    },
+    { after: "topic" }
+  );
+}
+
 export default apiInitializer("0.8", (api) => {
   const siteSettings = api.container.lookup("service:site-settings");
   const topicListPreviewsService = api.container.lookup(
@@ -107,7 +130,31 @@ export default apiInitializer("0.8", (api) => {
       columns.delete("views");
       columns.delete("posters");
       columns.delete("topic");
+    } else if (topicListPreviewsService.displayThumbnails) {
+      applyThumbnailListMetaLayout(columns, topicListPreviewsService);
+    } else {
+      topicListPreviewsService.listMetaIncludesPosters = false;
     }
+
+    if (
+      topicListPreviewsService.displayTiles &&
+      topicListPreviewsService.displayThumbnails
+    ) {
+      columns.add(
+        "previews-thumbnail",
+        { item: previewsTilesThumbnail },
+        { before: "topic" }
+      );
+    }
+
+    if (topicListPreviewsService.displayTiles) {
+      columns.add(
+        "previews-details",
+        { item: previewsDetails },
+        { after: "topic" }
+      );
+    }
+
     return columns;
   });
 
@@ -206,6 +253,8 @@ export default apiInitializer("0.8", (api) => {
       if (topicListPreviewsService.wideFormat) {
         value.push("side-by-side");
       }
+    } else if (topicListPreviewsService.displayThumbnails) {
+      value.push("tlp-thumbnail-list");
     }
     return value;
   });
@@ -231,27 +280,6 @@ export default apiInitializer("0.8", (api) => {
       return true;
     }
     return value; // Return default value
-  });
-
-  api.registerValueTransformer("topic-list-columns", ({ value: columns }) => {
-    if (
-      topicListPreviewsService.displayTiles &&
-      topicListPreviewsService.displayThumbnails
-    ) {
-      columns.add(
-        "previews-thumbnail",
-        { item: previewsTilesThumbnail },
-        { before: "topic" }
-      );
-    }
-    if (topicListPreviewsService.displayTiles) {
-      columns.add(
-        "previews-details",
-        { item: previewsDetails },
-        { after: "topic" }
-      );
-    }
-    return columns;
   });
 
   api.registerBehaviorTransformer(

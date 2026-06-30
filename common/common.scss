@@ -97,6 +97,72 @@ img.non-tiles-thumbnail {
   word-break: break-word;
 }
 
+// non-tiles thumbnail list: stack meta columns vertically on the right
+.topic-list.tlp-thumbnail-list:not(.tiles-style) {
+  .topic-list-item.has-thumbnail {
+    td.main-link {
+      width: auto;
+    }
+
+    td.tlp-list-meta {
+      width: auto;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+  }
+
+  .tlp-list-meta__container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.35em;
+    min-width: max-content;
+  }
+
+  .tlp-list-meta__top {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+
+    .num.posts,
+    .num.views,
+    .num.activity {
+      width: auto;
+      float: none;
+    }
+  }
+
+  .tlp-list-meta__bottom.posters {
+    width: auto;
+    display: flex;
+    justify-content: flex-end;
+
+    > a {
+      float: none;
+    }
+  }
+
+  th.tlp-list-meta {
+    text-align: right;
+
+    .tlp-list-meta__top {
+      justify-content: flex-end;
+
+      .num {
+        width: auto;
+      }
+
+      button {
+        padding: 0;
+      }
+    }
+
+    .tlp-list-meta__bottom.posters {
+      min-height: 1em;
+    }
+  }
+}
+
 .topic-actions {
   display: block;
 

@@ -209,4 +209,6 @@ export default class TopicListPreviewsService extends Service {
   get displayActions() {
     return this.enabledForRoute && this.displayMode.includes("actions");
   }
+
+  listMetaIncludesPosters = false;
 }
