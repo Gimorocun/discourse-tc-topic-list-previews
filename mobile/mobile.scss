@@ -32,6 +32,11 @@ td .main-link {
 
 .topic-list:not(.tiles-style) .topic-list-item td {
   padding: 6px;
+  padding-bottom: var(--tlp-topic-list-row-gap, 6px);
+}
+
+.topic-list.tlp-thumbnail-list:not(.tiles-style) .topic-list-item td {
+  padding-bottom: var(--tlp-topic-list-row-gap);
 }
 
 // tiles styling  specific styling

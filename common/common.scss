@@ -99,6 +99,10 @@ img.non-tiles-thumbnail {
 
 // non-tiles thumbnail list: stack meta columns vertically on the right
 .topic-list.tlp-thumbnail-list:not(.tiles-style) {
+  .topic-list-body > .topic-list-item > .topic-list-data {
+    padding-bottom: var(--tlp-topic-list-row-gap);
+  }
+
   .topic-list-item.has-thumbnail {
     td.main-link {
       display: flex;
