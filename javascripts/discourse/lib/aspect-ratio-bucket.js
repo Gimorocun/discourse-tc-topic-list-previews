@@ -1,25 +1,19 @@
-const NORMAL_RATIO = 5 / 3;
-// Band around 5:3 counts as "normal"; outside becomes wide/narrow.
-const RATIO_BAND = 1.1;
-const WIDE_THRESHOLD = NORMAL_RATIO * RATIO_BAND; // ~1.83
-const NARROW_THRESHOLD = NORMAL_RATIO / RATIO_BAND; // ~1.52
+const DEFAULT_BUCKET = "square";
 
 export function aspectRatioBucketName(width, height) {
   if (!width || !height) {
-    return "normal";
+    return DEFAULT_BUCKET;
   }
 
-  const ratio = width / height;
-
-  if (ratio >= WIDE_THRESHOLD) {
+  if (width > height) {
     return "wide";
   }
 
-  if (ratio <= NARROW_THRESHOLD) {
+  if (width < height) {
     return "narrow";
   }
 
-  return "normal";
+  return "square";
 }
 
 export function aspectRatioBucketClass(width, height) {

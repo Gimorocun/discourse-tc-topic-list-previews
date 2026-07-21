@@ -136,7 +136,16 @@ export default class PreviewsThumbnail extends Component {
     }
 
     const dims = thumbnailSourceDimensions(this.args.topic.thumbnails);
-    return aspectRatioBucketClass(dims?.width, dims?.height);
+    if (dims) {
+      return aspectRatioBucketClass(dims.width, dims.height);
+    }
+
+    // Video-only topics often have no thumbnail metadata; use sensible defaults.
+    if (this.videoPreview?.type === "embed") {
+      return "aspect-wide";
+    }
+
+    return "aspect-square";
   }
 
   get destinationUrl() {

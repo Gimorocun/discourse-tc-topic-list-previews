@@ -137,14 +137,29 @@ img.non-tiles-thumbnail {
           display: block;
         }
 
-        // aspect buckets:
-        // wide   → max-height
-        // narrow → max-width
-        // normal → fixed 5:3
+        // aspect buckets (1:1 baseline): wide | narrow | square
         img.non-tiles-thumbnail[class*="aspect-"],
         button.topic-video-preview.non-tiles-thumbnail[class*="aspect-"] {
           display: block;
+        }
+
+        img.non-tiles-thumbnail[class*="aspect-"] {
           object-fit: cover;
+        }
+
+        button.topic-video-preview.non-tiles-thumbnail[class*="aspect-"] {
+          overflow: hidden;
+          position: relative;
+
+          .video-preview-media,
+          .video-preview-poster,
+          .video-preview-placeholder {
+            height: 100%;
+            inset: 0;
+            object-fit: cover;
+            position: absolute;
+            width: 100%;
+          }
         }
 
         .aspect-wide {
@@ -161,10 +176,26 @@ img.non-tiles-thumbnail {
           max-height: var(--tlp-thumbnail-buckets-max-height);
         }
 
-        .aspect-normal {
-          aspect-ratio: 5 / 3;
-          width: min(100%, calc(var(--tlp-thumbnail-buckets-max-height) * 5 / 3));
+        .aspect-square {
+          aspect-ratio: 1 / 1;
+          width: min(100%, var(--tlp-thumbnail-buckets-max-height));
           height: auto;
+          max-height: var(--tlp-thumbnail-buckets-max-height);
+        }
+
+        button.topic-video-preview.non-tiles-thumbnail.aspect-wide {
+          aspect-ratio: 16 / 9;
+          width: min(100%, calc(var(--tlp-thumbnail-buckets-max-height) * 16 / 9));
+        }
+
+        button.topic-video-preview.non-tiles-thumbnail.aspect-narrow {
+          aspect-ratio: 3 / 4;
+          width: min(100%, var(--tlp-thumbnail-buckets-max-width));
+        }
+
+        button.topic-video-preview.non-tiles-thumbnail.aspect-square {
+          aspect-ratio: 1 / 1;
+          width: min(100%, var(--tlp-thumbnail-buckets-max-height));
         }
       }
     }
@@ -636,6 +667,13 @@ button.topic-video-preview {
     height: 100%;
     object-fit: cover;
     width: 100%;
+  }
+
+  &.non-tiles-thumbnail[class*="aspect-"] {
+    .video-preview-media {
+      max-height: none;
+      max-width: none;
+    }
   }
 
   .video-preview-placeholder {

@@ -179,7 +179,7 @@ topic_list_thumbnail_aspect_mode:
     - fixed
     - buckets
   description:
-    en: "Non-tiles thumbnail aspect mode. fixed = settings width/height. buckets = wide uses max-height, narrow uses max-width, normal uses 5:3."
+    en: "Non-tiles thumbnail aspect mode. fixed = settings width/height. buckets = wide (w > h), narrow (w < h), square (w = h) using 1:1 as the divider."
 topic_list_thumbnail_buckets_max_height:
   default: 220
   type: integer
