@@ -121,10 +121,41 @@ img.non-tiles-thumbnail {
         float: none;
         margin-right: 0;
         margin-top: 0.5em;
+        width: 100%;
 
         img.non-tiles-thumbnail,
         button.topic-video-preview.non-tiles-thumbnail {
           display: block;
+        }
+
+        // aspect buckets:
+        // wide   → max-height
+        // narrow → max-width
+        // normal → fixed 5:3
+        img.non-tiles-thumbnail[class*="aspect-"],
+        button.topic-video-preview.non-tiles-thumbnail[class*="aspect-"] {
+          display: block;
+          object-fit: cover;
+        }
+
+        .aspect-wide {
+          width: auto;
+          max-width: 100%;
+          height: auto;
+          max-height: var(--tlp-thumbnail-buckets-max-height);
+        }
+
+        .aspect-narrow {
+          width: auto;
+          max-width: min(100%, var(--tlp-thumbnail-buckets-max-width));
+          height: auto;
+          max-height: var(--tlp-thumbnail-buckets-max-height);
+        }
+
+        .aspect-normal {
+          aspect-ratio: 5 / 3;
+          width: min(100%, calc(var(--tlp-thumbnail-buckets-max-height) * 5 / 3));
+          height: auto;
         }
       }
     }

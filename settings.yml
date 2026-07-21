@@ -172,6 +172,24 @@ topic_list_thumbnail_height_mobile:
   default: 60
   description:
     en: "Height of image that can be previewed on mobile."
+topic_list_thumbnail_aspect_mode:
+  default: buckets
+  type: enum
+  choices:
+    - fixed
+    - buckets
+  description:
+    en: "Non-tiles thumbnail aspect mode. fixed = settings width/height. buckets = wide uses max-height, narrow uses max-width, normal uses 5:3."
+topic_list_thumbnail_buckets_max_height:
+  default: 220
+  type: integer
+  description:
+    en: "Max height in pixels for wide/narrow bucketed thumbnails."
+topic_list_thumbnail_buckets_max_width:
+  default: 320
+  type: integer
+  description:
+    en: "Max width in pixels for narrow bucketed thumbnails."
 topic_list_thumbnail_first_x_rows:
   default: 0
   type: integer
