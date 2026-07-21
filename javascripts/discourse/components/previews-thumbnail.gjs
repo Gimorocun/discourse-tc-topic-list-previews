@@ -140,11 +140,6 @@ export default class PreviewsThumbnail extends Component {
       return aspectRatioBucketClass(dims.width, dims.height);
     }
 
-    // Video-only topics often have no thumbnail metadata; use sensible defaults.
-    if (this.videoPreview?.type === "embed") {
-      return "aspect-wide";
-    }
-
     return "aspect-square";
   }
 
@@ -211,7 +206,6 @@ export default class PreviewsThumbnail extends Component {
           "topic-video-preview"
           "thumbnail"
           this.isTiles
-          this.aspectBucketClass
         }}
         aria-label={{i18n (themePrefix "tlp.video_preview.play_video")}}
         {{this.addHasThumbnailClass}}

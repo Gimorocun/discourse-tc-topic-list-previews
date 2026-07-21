@@ -84,10 +84,9 @@ img.non-tiles-thumbnail {
   width: var(--thumbnail-width);
 }
 
-// buckets mode: do not force fixed width/height (overrides rule above)
+// buckets mode: do not force fixed width/height on image thumbnails
 .topic-list.tlp-thumbnail-list:not(.tiles-style):not(.tlp-thumbnail-fixed) {
-  img.non-tiles-thumbnail,
-  button.topic-video-preview.non-tiles-thumbnail {
+  img.non-tiles-thumbnail {
     width: unset;
     height: unset;
   }
@@ -137,9 +136,8 @@ img.non-tiles-thumbnail {
           display: block;
         }
 
-        // aspect buckets (1:1 baseline): wide | narrow | square
-        img.non-tiles-thumbnail[class*="aspect-"],
-        button.topic-video-preview.non-tiles-thumbnail[class*="aspect-"] {
+        // aspect buckets (1:1 baseline): wide | narrow | square (images only)
+        img.non-tiles-thumbnail[class*="aspect-"] {
           display: block;
         }
 
@@ -163,21 +161,6 @@ img.non-tiles-thumbnail {
           width: 100%;
         }
 
-        button.topic-video-preview.non-tiles-thumbnail[class*="aspect-"] {
-          overflow: hidden;
-          position: relative;
-
-          .video-preview-media,
-          .video-preview-poster,
-          .video-preview-placeholder {
-            height: 100%;
-            inset: 0;
-            object-fit: cover;
-            position: absolute;
-            width: 100%;
-          }
-        }
-
         .aspect-wide {
           width: auto;
           max-width: 100%;
@@ -190,33 +173,6 @@ img.non-tiles-thumbnail {
           width: min(100%, var(--tlp-thumbnail-buckets-max-height));
           height: auto;
           max-height: var(--tlp-thumbnail-buckets-max-height);
-        }
-
-        button.topic-video-preview.non-tiles-thumbnail.aspect-wide {
-          aspect-ratio: 16 / 9;
-          width: min(100%, calc(var(--tlp-thumbnail-buckets-max-height) * 16 / 9));
-        }
-
-        button.topic-video-preview.non-tiles-thumbnail.aspect-narrow {
-          height: auto;
-          max-height: var(--tlp-thumbnail-buckets-max-height);
-          overflow: hidden;
-          width: min(100%, var(--tlp-thumbnail-buckets-max-width));
-
-          .video-preview-media,
-          .video-preview-poster,
-          .video-preview-placeholder {
-            height: auto;
-            inset: auto;
-            object-fit: unset;
-            position: relative;
-            width: 100%;
-          }
-        }
-
-        button.topic-video-preview.non-tiles-thumbnail.aspect-square {
-          aspect-ratio: 1 / 1;
-          width: min(100%, var(--tlp-thumbnail-buckets-max-height));
         }
       }
     }
@@ -688,13 +644,6 @@ button.topic-video-preview {
     height: 100%;
     object-fit: cover;
     width: 100%;
-  }
-
-  &.non-tiles-thumbnail[class*="aspect-"] {
-    .video-preview-media {
-      max-height: none;
-      max-width: none;
-    }
   }
 
   .video-preview-placeholder {
