@@ -6,6 +6,10 @@ import { modifier } from "ember-modifier";
 import concatClass from "discourse/helpers/concat-class";
 import dIcon from "discourse/helpers/d-icon";
 import { i18n } from "discourse-i18n";
+import {
+  aspectRatioBucketClass,
+  thumbnailSourceDimensions,
+} from "../lib/aspect-ratio-bucket";
 import { topicHasPostThumbnail } from "../lib/topic-video-preview";
 import TlpVideoPreviewModal from "./modal/tlp-video-preview";
 
@@ -120,6 +124,21 @@ export default class PreviewsThumbnail extends Component {
     return this.args.tiles ? "tiles-thumbnail" : "non-tiles-thumbnail";
   }
 
+  get useAspectBuckets() {
+    return (
+      !this.args.tiles && settings.topic_list_thumbnail_aspect_mode === "buckets"
+    );
+  }
+
+  get aspectBucketClass() {
+    if (!this.useAspectBuckets) {
+      return null;
+    }
+
+    const dims = thumbnailSourceDimensions(this.args.topic.thumbnails);
+    return aspectRatioBucketClass(dims?.width, dims?.height);
+  }
+
   get destinationUrl() {
     if (this.args.topic.force_latest_post_nav && this.args.topic.last_post_id) {
       return `/t/${this.args.topic.slug}/${this.args.topic.id}/${this.args.topic.last_post_id}`;
@@ -167,7 +186,11 @@ export default class PreviewsThumbnail extends Component {
     {{#if this.previewUrl}}
       <a href={{this.destinationUrl}} {{this.addHasThumbnailClass}}>
         <img
-          class={{concatClass "thumbnail" this.isTiles}}
+          class={{concatClass
+            "thumbnail"
+            this.isTiles
+            this.aspectBucketClass
+          }}
           src={{this.previewUrl}}
           loading="lazy"
         />
@@ -179,6 +202,7 @@ export default class PreviewsThumbnail extends Component {
           "topic-video-preview"
           "thumbnail"
           this.isTiles
+          this.aspectBucketClass
         }}
         aria-label={{i18n (themePrefix "tlp.video_preview.play_video")}}
         {{this.addHasThumbnailClass}}
@@ -209,7 +233,11 @@ export default class PreviewsThumbnail extends Component {
     {{else if this.defaultThumbnailUrl}}
       <a href={{this.destinationUrl}} {{this.addHasThumbnailClass}}>
         <img
-          class={{concatClass "thumbnail" this.isTiles}}
+          class={{concatClass
+            "thumbnail"
+            this.isTiles
+            this.aspectBucketClass
+          }}
           src={{this.defaultThumbnailUrl}}
           loading="lazy"
         />

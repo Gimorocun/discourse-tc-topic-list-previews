@@ -256,6 +256,9 @@ export default apiInitializer("0.8", (api) => {
       }
     } else if (topicListPreviewsService.displayThumbnails) {
       value.push("tlp-thumbnail-list");
+      if (settings.topic_list_thumbnail_aspect_mode === "fixed") {
+        value.push("tlp-thumbnail-fixed");
+      }
     }
     return value;
   });

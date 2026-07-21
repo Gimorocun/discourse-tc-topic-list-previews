@@ -84,6 +84,15 @@ img.non-tiles-thumbnail {
   width: var(--thumbnail-width);
 }
 
+// buckets mode: do not force fixed width/height (overrides rule above)
+.topic-list.tlp-thumbnail-list:not(.tiles-style):not(.tlp-thumbnail-fixed) {
+  img.non-tiles-thumbnail,
+  button.topic-video-preview.non-tiles-thumbnail {
+    width: unset;
+    height: unset;
+  }
+}
+
 .discourse-tags {
   display: flex;
 

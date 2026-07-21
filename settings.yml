@@ -159,19 +159,19 @@ topic_list_thumbnail_resolution_level:
 topic_list_thumbnail_width:
   default: 150
   description:
-    en: "Width of image that can be previewed."
+    en: "Fixed thumbnail width (pixels). Used only when aspect mode is fixed."
 topic_list_thumbnail_height:
   default: 100
   description:
-    en: "Height of image that can be previewed."
+    en: "Fixed thumbnail height (pixels). Used only when aspect mode is fixed."
 topic_list_thumbnail_width_mobile:
   default: 50
   description:
-    en: "Width of image that can be previewed on mobile."
+    en: "Fixed mobile thumbnail width (pixels). Used only when aspect mode is fixed."
 topic_list_thumbnail_height_mobile:
   default: 60
   description:
-    en: "Height of image that can be previewed on mobile."
+    en: "Fixed mobile thumbnail height (pixels). Used only when aspect mode is fixed."
 topic_list_thumbnail_aspect_mode:
   default: buckets
   type: enum

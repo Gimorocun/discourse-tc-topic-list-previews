@@ -24,6 +24,14 @@
     height: var(--thumbnail-height-mobile);
     width: var(--thumbnail-width-mobile);
   }
+
+  .tlp-thumbnail-list:not(.tiles-style):not(.tlp-thumbnail-fixed) {
+    img.non-tiles-thumbnail,
+    button.topic-video-preview.non-tiles-thumbnail {
+      width: unset;
+      height: unset;
+    }
+  }
 }
 
 td .main-link {
